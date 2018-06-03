@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <table>
+        <tr>
+            <td><img src="{{ page.image }}" width="250" height="250"/></td>
+            <td>Title: {{ page.title }}<br/> Description: {{ page.description }} <br/> URL: <a href="{{ page.path }}" target='_blank'>{{ page.path }}</a><br/>Starost podataka: {{ razlika }}</td>
+        </tr>
+    </table>
+{% endblock %}
