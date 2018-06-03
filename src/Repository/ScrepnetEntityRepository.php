@@ -53,13 +53,13 @@ class ScrepnetEntityRepository extends ServiceEntityRepository
 
         $sql = '';
 
-        if(isset($domain) && isset($text)){
+        if (isset($domain) && isset($text)) {
             $sql = 'SELECT * FROM screpnet_entity WHERE escape_url = "'.$domain.'" AND MATCH (title,description) AGAINST ("'.$text.'" IN NATURAL LANGUAGE MODE) ORDER BY date';
-        }elseif (isset($domain)){
+        } elseif (isset($domain)) {
             $sql = 'SELECT * FROM screpnet_entity WHERE escape_url = "'.$domain.'" ORDER BY date';
-        }elseif (isset($text)){
+        } elseif (isset($text)) {
             $sql = 'SELECT * FROM screpnet_entity WHERE MATCH (title,description) AGAINST ("'.$text.'" IN NATURAL LANGUAGE MODE) ORDER BY date';
-        }else{
+        } else {
             $sql = 'SELECT * FROM screpnet_entity ORDER BY date';
         }
 

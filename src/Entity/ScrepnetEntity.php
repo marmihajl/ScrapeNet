@@ -183,6 +183,4 @@ class ScrepnetEntity
     {
         $this->image = $image;
     }
-
-
 }

@@ -8,7 +8,6 @@
 
 namespace App\Form;
 
-
 use App\Repository\ScrepnetEntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -45,8 +44,7 @@ class ScrepnetEntitySearch extends AbstractType
         $svi = [];
 
         $svi[''] = null;
-        for($i = 0; $i < sizeof($r); $i++)
-        {
+        for ($i = 0; $i < sizeof($r); $i++) {
             $obj = $r[$i];
             $svi[$obj['url']] = $obj['escape_url'];
         }
@@ -57,9 +55,6 @@ class ScrepnetEntitySearch extends AbstractType
 
         $builder->add('domain', ChoiceType::class, array(
             'choices'  => $svi, 'label'=>'Domena:', 'data' => $this->session->get('domain'), 'required'=>false
-        ))->add('url',TextType::class,['label'=>'Title/description:', 'required'=>false])->add('save',SubmitType::class,['label'=>'Pretraži']);
-
-
+        ))->add('url', TextType::class, ['label'=>'Title/description:', 'required'=>false])->add('save', SubmitType::class, ['label'=>'Pretraži']);
     }
-
 }

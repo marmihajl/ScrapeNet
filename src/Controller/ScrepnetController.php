@@ -8,7 +8,6 @@
 
 namespace App\Controller;
 
-
 use App\Entity\ScrepnetEntity;
 use App\Form\ScrepenetEntityType;
 use App\Form\ScrepnetEntitySearch;
@@ -53,9 +52,15 @@ class ScrepnetController extends Controller
      */
     private $session;
 
-    public function __construct(\Twig_Environment $twig, ScrepnetEntityRepository $repository, FormFactoryInterface $formFactory,
-                                EntityManagerInterface $entityManager, RouterInterface $router, SessionInterface $session, ContainerInterface $container)
-    {
+    public function __construct(
+        \Twig_Environment $twig,
+        ScrepnetEntityRepository $repository,
+        FormFactoryInterface $formFactory,
+                                EntityManagerInterface $entityManager,
+        RouterInterface $router,
+        SessionInterface $session,
+        ContainerInterface $container
+    ) {
         $this->twig = $twig;
         $this->repository = $repository;
         $this->formFactory = $formFactory;
@@ -70,7 +75,6 @@ class ScrepnetController extends Controller
      */
     public function index(Request $request)
     {
-
         $screpnetEntity = new ScrepnetEntity();
 
         $form = $this->formFactory->create(ScrepenetEntityType::class);
@@ -82,7 +86,7 @@ class ScrepnetController extends Controller
             return $this->redirect($data['url']);
         }
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $info = Embed::create($data['url']);
 
@@ -100,13 +104,11 @@ class ScrepnetController extends Controller
             $screpnetEntity->setDate(new \DateTime());
             $screpnetEntity->setImage($info->image);
 
-            try{
+            try {
                 $this->entityManager->persist($screpnetEntity);
                 $this->entityManager->flush();
-            }catch (\Exception $e){
-
+            } catch (\Exception $e) {
             }
-
         }
 
         return new Response($this->twig->render('screpenet/index.html.twig', ['form'=>$form->createView(), 'scrapes'=>$this->repository->getDistinctDomains()]));
@@ -134,8 +136,7 @@ class ScrepnetController extends Controller
      */
     public function addSessionDomain($name, Request $request)
     {
-
-        $this->session->set('domain',$name);
+        $this->session->set('domain', $name);
 
         //return $this->redirect('https://www.google.com/');
 
@@ -147,11 +148,9 @@ class ScrepnetController extends Controller
      */
     public function searchScrepnet(Request $request)
     {
-
-        if(!empty($this->session->get('page'))){
-
+        if (!empty($this->session->get('page'))) {
             $page = intval($this->session->get('page'));
-            $this->session->set('page','');
+            $this->session->set('page', '');
 
             $r = null;
 
@@ -163,7 +162,7 @@ class ScrepnetController extends Controller
 
             $broj = count($r);
 
-            if($broj == 0){
+            if ($broj == 0) {
                 $page = $page-1;
                 $r = $this->repository->lastQuery($page-1);
 
@@ -171,9 +170,10 @@ class ScrepnetController extends Controller
             }
 
             $nextPage = true;
-            if ($broj < $this->container->getParameter('pagination')) $nextPage = false;
-        }else
-        {
+            if ($broj < $this->container->getParameter('pagination')) {
+                $nextPage = false;
+            }
+        } else {
             $r = null;
 
             $form = $this->formFactory->create(ScrepnetEntitySearch::class);
@@ -182,31 +182,27 @@ class ScrepnetController extends Controller
 
             //$r = $this->repository->getByDomainOrText();
 
-            if($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
                 //echo 'x'; die;
 
-                if(isset($data["url"]) && isset($data["domain"])){
-                    $r = $this->repository->getByDomainOrText($data["domain"],$data["url"]);
-
-                }elseif (isset($data["domain"])){
-                    $r = $this->repository->getByDomainOrText($data["domain"],null);
-                }elseif (isset($data["url"])){
-                    $r = $this->repository->getByDomainOrText(null,$data["url"]);
-                }else{
-                    $r = $this->repository->getByDomainOrText(null,null);
+                if (isset($data["url"]) && isset($data["domain"])) {
+                    $r = $this->repository->getByDomainOrText($data["domain"], $data["url"]);
+                } elseif (isset($data["domain"])) {
+                    $r = $this->repository->getByDomainOrText($data["domain"], null);
+                } elseif (isset($data["url"])) {
+                    $r = $this->repository->getByDomainOrText(null, $data["url"]);
+                } else {
+                    $r = $this->repository->getByDomainOrText(null, null);
                 }
-
-            }else{
-                if(!empty($this->session->get('domain'))){
+            } else {
+                if (!empty($this->session->get('domain'))) {
                     $r = $this->repository->findOneBy(['escapeUrl'=>$this->session->get('domain')]);
-                    $r = $this->repository->getByDomainOrText($this->session->get('domain'),null);
-                    //$this->session->set('domain', '');
-                }else{
-
-                    $r = $this->repository->getByDomainOrText(null,null);
+                    $r = $this->repository->getByDomainOrText($this->session->get('domain'), null);
+                //$this->session->set('domain', '');
+                } else {
+                    $r = $this->repository->getByDomainOrText(null, null);
                 }
-
             }
 
             $this->session->set('domain', '');
@@ -215,7 +211,9 @@ class ScrepnetController extends Controller
             $broj = count($r);
 
             $nextPage = true;
-            if ($broj < $this->container->getParameter('pagination')) $nextPage = false;
+            if ($broj < $this->container->getParameter('pagination')) {
+                $nextPage = false;
+            }
 
             $page = 1;
         }
@@ -227,8 +225,7 @@ class ScrepnetController extends Controller
      */
     public function offsetScrepnet($number)
     {
-        $this->session->set('page',$number);
-        return $this->redirect('/search/',308);
+        $this->session->set('page', $number);
+        return $this->redirect('/search/', 308);
     }
-
 }
